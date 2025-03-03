@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Cart</title>
+</head>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color:  #fff;
+}
+.heading{
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-size: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+hr{
+    border: none;
+            height: 2px;
+            background-color: black; 
+        }
+#cart-count {
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+}
+#total-amount {
+    font-weight: bold;
+}
+
+.back-to-menu{
+    background-color: rgb(53, 103, 241);
+    color:white;
+    border: none;
+    font-size: 15px;
+    padding: 5px 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+
+}
+.back-to-menu:hover{
+    background-color:  rgb(232, 90, 90);
+}
+.order-now{
+    background-color:  rgb(53, 103, 241);
+    color:white;
+    border: none;
+    font-size: 15px;
+    padding: 5px 10px;
+    margin-top: 2%;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+
+}
+.order-now:hover{
+    background-color:  rgb(232, 90, 90);
+}
+.remove-from-cart{
+    background-color:  rgb(53, 103, 241);
+    border: none;
+    font-size:15px;
+    color: white;
+    padding: 5px 10px;
+    padding-right: 5px;
+    padding-left: 5%;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+}
+.remove-from-cart:hover{
+    background-color: rgb(232, 90, 90);
+}
+#cart-items {
+            padding: 10px;
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: center; 
+        }
+
+        .item {
+        border: 2px solid #0b0b0b;
+        padding: 10px;
+        margin: 5px;
+        flex: 0 0 auto;
+        box-sizing: border-box;
+        text-align: center; 
+        display: flex; 
+        flex-direction: column; 
+        justify-content: center; 
+    }
+    
+        .item img {
+            margin-top: 2%;
+            height: 200px; 
+            width: 200px; 
+        }
+
+
+</style>
+<body>
+    <div class="heading">
+  <h1>Cart</h1>
+  </div>
+  <hr>
+  <div id="cart-items">
+  </div>
+ <center> <p>Total Amount: ₹<span id="total-amount">0</span></p></center>
+ <center><a href="index.html"> <button class="back-to-menu" data-name="Item 2" data-price="15">back to menu</button></a></center>
+ <center><a href="address.html"> <button class="order-now" >Order Now </button></a></center>
+ <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const cartItemsContainer = document.getElementById('cart-items');
+    const totalAmount = document.getElementById('total-amount');
+    const backButton = document.querySelector('a[href="menu.php"]');
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function updateCart() {
+        cartItemsContainer.innerHTML = '';
+        let total = 0;
+
+        cart.forEach(item => {
+            const cartItem = document.createElement('div');
+            cartItem.classList.add('item');
+            cartItem.innerHTML = `
+                <div class="item-info">
+                    <img src="${item.image}" alt="${item.name}">
+                    <h2>${item.name}</h2>
+                    <p>Price: ₹${item.price}</p> <!-- Update currency symbol here -->
+                </div>
+                <button class="remove-from-cart" data-name="${item.name}" data-price="${item.price}">Remove</button>
+            `;
+
+            cartItemsContainer.appendChild(cartItem);
+            total += item.price;
+        });
+
+        totalAmount.textContent = '₹' + total.toFixed(2); 
+    }
+
+    cartItemsContainer.addEventListener('click', function (event) {
+        if (event.target.classList.contains('remove-from-cart')) {
+            const name = event.target.getAttribute('data-name');
+            const price = parseFloat(event.target.getAttribute('data-price'));
+
+            const index = cart.findIndex(item => item.name === name);
+
+            if (index !== -1) {
+                cart.splice(index, 1);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCart();
+            }
+        }
+    });
+
+    updateCart();
+
+    backButton.addEventListener('click', function () {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    });
+});
+</script>
+</body>
+</html>
